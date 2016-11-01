@@ -44,7 +44,7 @@ global y = 0
 global dx = 4
 global dy = -4
 global brickHeight = 20
-global brickWidth = 90
+global brickWidth = 40
 global brick = #()
 global score = 0
 global lives = 3
@@ -53,41 +53,59 @@ global brickCount = 0
 global level = 0
 global iniFile = ""
 
-rollout _rBreakOut "Break Out - Game" width:600 height:604
+rollout _rBreakOut "Break Out - Game" width:600 height:623
 (
 	checkbutton 'ball' " " pos:[242,345] width:20 height:20 enabled:true checked:true align:#left
-	checkbutton 'paddle' "" pos:[103,591] width:100 height:9 checked:true align:#left
-	checkbutton 'paddle_ramp' "" pos:[103,591] width:30 height:2 checked:false align:#left
+	checkbutton 'paddle' "" pos:[103,614] width:100 height:9 checked:true align:#left
+	checkbutton 'paddle_ramp' "" pos:[103,608] width:30 height:2 checked:false align:#left
 	Timer 'tmrAnimate' "" pos:[13,380] width:24 height:24 interval:2 align:#left
 	Timer 'tmrAnimatePaddle' "" pos:[13,380] width:24 height:24 interval:5 align:#left
-	Timer 'tmrReset' "" active: false interval: 1000
+	Timer 'tmrReset' "" pos:[13,605] width:24 height:24 interval:1000 active:false align:#left
 	label 'lblScore' "Score: 0 | Lives: 3" pos:[5,5] width:150 height:13 align:#left
-	label 'lblSpeed' "Speed: Normal" pos:[5, 25] width:95 height:13 align:#left
-			
-	button 'brick_86' "" pos:[67,135] width:90 height:20 align:#left
-	button 'brick_87' "" pos:[205,135] width:90 height:20 align:#left
-	button 'brick_88' "" pos:[305,135] width:90 height:20 align:#left
-	button 'brick_89' "" pos:[444,135] width:90 height:20 align:#left
-	button 'brick_92' "" pos:[67,161] width:90 height:20 align:#left
-	button 'brick_93' "" pos:[205,161] width:90 height:20 align:#left
-	button 'brick_94' "" pos:[305,161] width:90 height:20 align:#left
-	button 'brick_95' "" pos:[444,161] width:90 height:20 align:#left
-	button 'brick_98' "" pos:[67,187] width:90 height:20 align:#left
-	button 'brick_99' "" pos:[205,187] width:90 height:20 align:#left
-	button 'brick_100' "" pos:[305,187] width:90 height:20 align:#left
-	button 'brick_101' "" pos:[444,187] width:90 height:20 align:#left
-	button 'brick_122' "" pos:[67,57] width:90 height:20 align:#left
-	button 'brick_123' "" pos:[205,57] width:90 height:20 align:#left
-	button 'brick_124' "" pos:[305,57] width:90 height:20 align:#left
-	button 'brick_125' "" pos:[444,57] width:90 height:20 align:#left
-	button 'brick_128' "" pos:[67,83] width:90 height:20 align:#left
-	button 'brick_129' "" pos:[205,83] width:90 height:20 align:#left
-	button 'brick_130' "" pos:[305,83] width:90 height:20 align:#left
-	button 'brick_131' "" pos:[444,83] width:90 height:20 align:#left
-	button 'brick_134' "" pos:[67,109] width:90 height:20 align:#left
-	button 'brick_135' "" pos:[205,109] width:90 height:20 align:#left
-	button 'brick_136' "" pos:[305,109] width:90 height:20 align:#left
-	button 'brick_137' "" pos:[444,109] width:90 height:20 align:#left
+	label 'lblSpeed' "Speed: Normal" pos:[5,25] width:95 height:13 align:#left
+	
+
+	button 'brick_29' "" pos:[8,64] width:40 height:20 align:#left
+	button 'brick_33' "" pos:[8,88] width:40 height:20 align:#left
+	button 'brick_34' "" pos:[8,112] width:40 height:20 align:#left
+	button 'brick_35' "" pos:[88,64] width:40 height:20 align:#left
+	button 'brick_36' "" pos:[88,88] width:40 height:20 align:#left
+	button 'brick_37' "" pos:[88,112] width:40 height:20 align:#left
+	button 'brick_38' "" pos:[24,136] width:40 height:20 align:#left
+	button 'brick_39' "" pos:[72,136] width:40 height:20 align:#left
+	button 'brick_40' "" pos:[48,160] width:40 height:20 align:#left
+	button 'brick_41' "" pos:[160,64] width:40 height:20 align:#left
+	button 'brick_42' "" pos:[160,88] width:40 height:20 align:#left
+	button 'brick_43' "" pos:[160,112] width:40 height:20 align:#left
+	button 'brick_44' "" pos:[160,136] width:40 height:20 align:#left
+	button 'brick_45' "" pos:[160,160] width:40 height:20 align:#left
+	button 'brick_47' "" pos:[272,64] width:40 height:20 align:#left
+	button 'brick_48' "" pos:[224,64] width:40 height:20 align:#left
+	button 'brick_49' "" pos:[224,88] width:40 height:20 align:#left
+	button 'brick_50' "" pos:[224,112] width:40 height:20 align:#left
+	button 'brick_51' "" pos:[272,112] width:40 height:20 align:#left
+	button 'brick_52' "" pos:[272,136] width:40 height:20 align:#left
+	button 'brick_53' "" pos:[272,160] width:40 height:20 align:#left
+	button 'brick_54' "" pos:[224,160] width:40 height:20 align:#left
+	button 'brick_55' "" pos:[344,64] width:40 height:20 align:#left
+	button 'brick_56' "" pos:[344,88] width:40 height:20 align:#left
+	button 'brick_57' "" pos:[344,112] width:40 height:20 align:#left
+	button 'brick_58' "" pos:[344,136] width:40 height:20 align:#left
+	button 'brick_59' "" pos:[344,160] width:40 height:20 align:#left
+	button 'brick_60' "" pos:[392,64] width:40 height:20 align:#left
+	button 'brick_61' "" pos:[392,160] width:40 height:20 align:#left
+	button 'brick_62' "" pos:[456,64] width:40 height:20 align:#left
+	button 'brick_63' "" pos:[456,88] width:40 height:20 align:#left
+	button 'brick_64' "" pos:[456,112] width:40 height:20 align:#left
+	button 'brick_65' "" pos:[456,136] width:40 height:20 align:#left
+	button 'brick_66' "" pos:[456,160] width:40 height:20 align:#left
+	button 'brick_67' "" pos:[504,64] width:40 height:20 align:#left
+	button 'brick_71' "" pos:[504,160] width:40 height:20 align:#left
+	button 'brick_72' "" pos:[552,64] width:40 height:20 align:#left
+	button 'brick_73' "" pos:[552,88] width:40 height:20 align:#left
+	button 'brick_74' "" pos:[552,112] width:40 height:20 align:#left
+	button 'brick_75' "" pos:[552,136] width:40 height:20 align:#left
+	button 'brick_76' "" pos:[552,160] width:40 height:20 align:#left	
 	
 	fn resetSettings = 
 	(
@@ -102,7 +120,7 @@ rollout _rBreakOut "Break Out - Game" width:600 height:604
 		 dx = 4
 		 dy = -4
 		 brickHeight = 20
-		 brickWidth = 90
+		 brickWidth = 40
 		 brick = #()
 		 score = 0
 		 lives = 3
@@ -215,6 +233,10 @@ rollout _rBreakOut "Break Out - Game" width:600 height:604
 		
 	global oldPaddleX = 0
 	
+	
+	
+	global currentSpeed = 0.0
+	
 	on _rBreakOut open do
 	(
 		resetSettings()
@@ -238,14 +260,6 @@ rollout _rBreakOut "Break Out - Game" width:600 height:604
 		tmrAnimatePaddle.active = false
 		createDialog _rBreakOutStart
 	)
-	
-	on tmrReset tick do
-	(
-		resetState()
-		tmrReset.active = false
-	)
-	
-	global currentSpeed = 0.0
 	on tmrAnimate tick do
 	(	
 		if(x + dx > wCanvas - Padding() - 10 or x + dx < Padding() + 10) do dx = -dx
@@ -302,7 +316,6 @@ rollout _rBreakOut "Break Out - Game" width:600 height:604
 		
 		BallPos x y
 	)
-	
 	on tmrAnimatePaddle tick do
 	(
 		dialogPos = getDialogPos _rBreakOut			
@@ -318,6 +331,11 @@ rollout _rBreakOut "Break Out - Game" width:600 height:604
 		)
 			
 		PaddlePos paddleX
+	)
+	on tmrReset tick do
+	(
+		resetState()
+		tmrReset.active = false
 	)
 )
 
