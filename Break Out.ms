@@ -2,7 +2,7 @@
 [INFO] 
 
 NAME = Break Out
-VERSION = 1.0.1
+VERSION = 1.0.2
 AUTHOR = Vasily Lukyanenko
 DEV = VISCO
 HELP = 
@@ -50,17 +50,18 @@ global score = 0
 global lives = 3
 global paddleDirection = 0
 global brickCount = 0
-
+global level = 0
 global iniFile = ""
 
 rollout _rBreakOut "Break Out - Game" width:600 height:604
 (
 	checkbutton 'ball' " " pos:[242,345] width:20 height:20 enabled:true checked:true align:#left
 	checkbutton 'paddle' "" pos:[103,591] width:100 height:9 checked:true align:#left
+	checkbutton 'paddle_ramp' "" pos:[103,591] width:30 height:2 checked:false align:#left
 	Timer 'tmrAnimate' "" pos:[13,380] width:24 height:24 interval:2 align:#left
 	Timer 'tmrAnimatePaddle' "" pos:[13,380] width:24 height:24 interval:5 align:#left
 	Timer 'tmrReset' "" active: false interval: 1000
-	label 'lblScore' "Score: 0 | Lives: 3" pos:[5,5] width:95 height:13 align:#left
+	label 'lblScore' "Score: 0 | Lives: 3" pos:[5,5] width:150 height:13 align:#left
 	label 'lblSpeed' "Speed: Normal" pos:[5, 25] width:95 height:13 align:#left
 			
 	button 'brick_86' "" pos:[67,135] width:90 height:20 align:#left
@@ -88,6 +89,29 @@ rollout _rBreakOut "Break Out - Game" width:600 height:604
 	button 'brick_136' "" pos:[305,109] width:90 height:20 align:#left
 	button 'brick_137' "" pos:[444,109] width:90 height:20 align:#left
 	
+	fn resetSettings = 
+	(
+		 hCanvas = 0
+		 wCanvas = 0
+		 hBall = 20
+		 wBall = 20
+		 wPaddle = 100
+		 paddleX = 0
+		 x = 0
+		 y = 0
+		 dx = 4
+		 dy = -4
+		 brickHeight = 20
+		 brickWidth = 90
+		 brick = #()
+		 score = 0
+		 lives = 3
+		 paddleDirection = 0
+		 brickCount = 0
+		 level = 0
+		 iniFile = ""
+	)
+	
 	fn BallPos x y = 
 	(
 		try
@@ -101,11 +125,12 @@ rollout _rBreakOut "Break Out - Game" width:600 height:604
 	fn PaddlePos x = 
 	(
 		paddle.pos.x = x - wPaddle / 2
+		paddle_ramp.pos.x = paddle.pos.x + (wPaddle / 2) - 15
 	)
 	
 	fn DisplayInfo =
 	(
-		m = "Score: " + score as string + " | Lives: " + lives as string
+		m = "Score: " + ((level * 100.0) as integer) as string + " | Lives: " + lives as string
 		lblScore.caption = m
 	)
 	
@@ -134,7 +159,7 @@ rollout _rBreakOut "Break Out - Game" width:600 height:604
 	)
 
 	global hit = 0
-	global lastHit = timeStamp()
+	global lastHit = 0
 		
 	fn CollisionDetect =
 	(
@@ -159,15 +184,20 @@ rollout _rBreakOut "Break Out - Game" width:600 height:604
 					dx += a[random 1 2]
 					
 					score += 1
-					if(lastHit == 0) then lastHit = timeStamp() else hit += timeStamp() - lastHit
-								
 					
-					level = abs((1000.0 - (hit / 1000.0)) * lives)
-									
+					if(lastHit == 0) do lastHit = timeStamp()
+					
+					hit = timeStamp() - lastHit
+					lastHit = timeStamp()
+					if(hit == 0) do hit = 1000.0
+					
+					level += (1.0 / (hit / 100.0)) * lives
+					
 					DisplayInfo()
 								
 					if(score >= brickCount) do
-					(				
+					(	
+						level = level * 100.0
 						o = (getIniSetting iniFile "SCOREBOARD" (sysInfo.username)) as float
 						if(o == "" or o < level)  do setINISetting iniFile "SCOREBOARD" (sysInfo.username) (level as string)
 						
@@ -187,6 +217,8 @@ rollout _rBreakOut "Break Out - Game" width:600 height:604
 	
 	on _rBreakOut open do
 	(
+		resetSettings()
+		
 		hCanvas = _rBreakOut.height
 		wCanvas = _rBreakOut.width
 		
@@ -238,7 +270,7 @@ rollout _rBreakOut "Break Out - Game" width:600 height:604
 				)
 				
 				dy = -dy - currentSpeed
-				print dy
+				
 				dx += paddleDirection				
 			)
 			else
@@ -312,7 +344,7 @@ rollout _rBreakOutStart "BreakOut - Main Menu" width:600 height:600
 		n = "\n"
 		m = "BreakOut" + n + n
 		m += "by Vasily Lukyanenko" +n
-		m += "v.1.0.1"
+		m += "v.1.0.2"
 		
 		messageBox m title: "BreakOut" beep: false
 	)
@@ -343,13 +375,14 @@ rollout _rBreakOutStart "BreakOut - Main Menu" width:600 height:600
 		
 		sort scores
 		m = ""	
-		
+		uCnt = 1
 		for i in scores.count to 1 by -1 do
 		(
 			z = findItem userScores scores[i]
-			if(z != 0) do
+			if(z != 0 and userScores[z] != undefined) do
 			(
-				m += users[z] + ": " + (userScores[z] as integer) as string + "\n"								
+				m += uCnt as string + ".  " + users[z] + ": " + (userScores[z] as integer) as string + "\n"	
+				uCnt	+= 1
 			)
 		)
 		
