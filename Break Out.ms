@@ -232,9 +232,7 @@ rollout _rBreakOut "Break Out - Game" width:600 height:623
 	)
 		
 	global oldPaddleX = 0
-	
-	
-	
+		
 	global currentSpeed = 0.0
 	
 	on _rBreakOut open do
@@ -271,7 +269,7 @@ rollout _rBreakOut "Break Out - Game" width:600 height:623
 			(	
 				
 				
-				if(x > paddleX - 20 and x < paddleX + 20) then 
+				if(x > paddleX - 25 and x < paddleX + 25) then 
 				(
 					currentSpeed -= -1					
 					lblSpeed.caption = "Speed: " + abs(currentSpeed) as string
@@ -284,6 +282,7 @@ rollout _rBreakOut "Break Out - Game" width:600 height:623
 				)
 				
 				dy = -dy - currentSpeed
+				print paddleDirection
 				
 				dx += paddleDirection				
 			)
@@ -323,11 +322,10 @@ rollout _rBreakOut "Break Out - Game" width:600 height:623
 		if(t > 0 and t < wCanvas)  do 
 		(	
 			paddleX = t
-	
-			if(paddleX > oldPaddleX) do paddleDirection = 1
-			if(paddleX < oldPaddleX) do paddleDirection = -1
 			
-			
+			if(paddleX > oldPaddleX and oldPaddleX != 0) do paddleDirection = 1
+			if(paddleX < oldPaddleX and oldPaddleX != 0) do paddleDirection = -1		
+			oldPaddleX = paddleX		
 		)
 			
 		PaddlePos paddleX
