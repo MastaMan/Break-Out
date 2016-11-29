@@ -52,6 +52,7 @@ global paddleDirection = 0
 global brickCount = 0
 global level = 0
 global iniFile = ""
+global currentSpeed = 0.0
 
 rollout _rBreakOut "Break Out - Game" width:600 height:623
 (
@@ -146,10 +147,10 @@ rollout _rBreakOut "Break Out - Game" width:600 height:623
 		paddle_ramp.pos.x = paddle.pos.x + (wPaddle / 2) - 15
 	)
 	
-	fn DisplayInfo =
+	fn DisplayInfo level lives =
 	(
-		m = "Score: " + ((level * 100.0) as integer) as string + " | Lives: " + lives as string
-		lblScore.caption = m
+		m = "Score: " + (level as integer) as string + " | Lives: " + lives as string
+		_rBreakOut.lblScore.caption = m
 	)
 	
 	fn Padding = wBall / 2
@@ -191,8 +192,7 @@ rollout _rBreakOut "Break Out - Game" width:600 height:623
 				(
 					dy = -dy
 					b.pos.y = -1000
-					
-					
+										
 					f = findItem brick b
 					if(f != 0) do deleteItem brick f
 										
@@ -212,12 +212,11 @@ rollout _rBreakOut "Break Out - Game" width:600 height:623
 					if(s < 2.0) do s = 1.0
 					level += j * lives * s
 					
-					DisplayInfo()
+					DisplayInfo level lives
 								
 					if(score >= brickCount) do
-					(	
-						level = level * 100.0
-						o = (getIniSetting iniFile "SCOREBOARD" (sysInfo.username)) as float
+					(							
+						o = (getIniSetting iniFile "SCOREBOARD" (sysInfo.username)) as integer
 						if(o == "" or o < level)  do setINISetting iniFile "SCOREBOARD" (sysInfo.username) (level as string)
 						
 						tmrAnimate.active = false
@@ -234,8 +233,6 @@ rollout _rBreakOut "Break Out - Game" width:600 height:623
 		
 	global oldPaddleX = 0
 		
-	global currentSpeed = 0.0
-	
 	on _rBreakOut open do
 	(
 		resetSettings()
@@ -244,9 +241,10 @@ rollout _rBreakOut "Break Out - Game" width:600 height:623
 		wCanvas = _rBreakOut.width
 		
 		resetState()
-		DisplayInfo()
+		DisplayInfo level lives
 		
 		brick = for i in _rBreakOut.controls where matchPattern i.name pattern: "brick_*" collect i
+			
 		brickCount = brick.count
 		
 		d = getFilenamePath  (getThisScriptFilename())
@@ -290,7 +288,7 @@ rollout _rBreakOut "Break Out - Game" width:600 height:623
 			(			
 				lives -= 1
 				
-				DisplayInfo()
+				DisplayInfo level lives
 				
 				tmrAnimate.active = false
 				tmrAnimatePaddle.active = false
