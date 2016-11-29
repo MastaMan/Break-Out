@@ -2,7 +2,7 @@
 [INFO] 
 
 NAME = Break Out
-VERSION = 1.0.2
+VERSION = 1.0.3
 AUTHOR = Vasily Lukyanenko
 DEV = VISCO
 HELP = 
@@ -62,7 +62,7 @@ rollout _rBreakOut "Break Out - Game" width:600 height:623
 	Timer 'tmrAnimatePaddle' "" pos:[13,380] width:24 height:24 interval:5 align:#left
 	Timer 'tmrReset' "" pos:[13,605] width:24 height:24 interval:1000 active:false align:#left
 	label 'lblScore' "Score: 0 | Lives: 3" pos:[5,5] width:150 height:13 align:#left
-	label 'lblSpeed' "Speed: Normal" pos:[5,25] width:95 height:13 align:#left
+	label 'lblSpeed' "Speed: 1" pos:[5,25] width:95 height:13 align:#left
 	
 
 	button 'brick_29' "" pos:[8,64] width:40 height:20 align:#left
@@ -195,11 +195,8 @@ rollout _rBreakOut "Break Out - Game" width:600 height:623
 					
 					f = findItem brick b
 					if(f != 0) do deleteItem brick f
-					
-					a = #()
-					a[1] = random -3 -1
-					a[2] = random 1 3
-					dx += a[random 1 2]
+										
+					dx += random -1 1
 					
 					score += 1
 					
@@ -207,9 +204,13 @@ rollout _rBreakOut "Break Out - Game" width:600 height:623
 					
 					hit = timeStamp() - lastHit
 					lastHit = timeStamp()
-					if(hit == 0) do hit = 1000.0
+					if(hit == 0.0) do hit = 1000.0
 					
-					level += (1.0 / (hit / 100.0)) * lives
+					j = ceil (1.0 / (hit / 1000.0))
+										
+					s = abs(currentSpeed)
+					if(s < 2.0) do s = 1.0
+					level += j * lives * s
 					
 					DisplayInfo()
 								
@@ -271,19 +272,18 @@ rollout _rBreakOut "Break Out - Game" width:600 height:623
 				
 				if(x > paddleX - 25 and x < paddleX + 25) then 
 				(
-					currentSpeed -= -1					
-					lblSpeed.caption = "Speed: " + abs(currentSpeed) as string
+					currentSpeed += 1					
+					lblSpeed.caption = "Speed: " + (abs(currentSpeed) as integer) as string
 				)
 				else
 				(
-					dy = 3
-					currentSpeed = -1
-					lblSpeed.caption = "Speed: Normal"
+					dy = 6
+					currentSpeed = 1
+					lblSpeed.caption = "Speed: 1"
 				)
 				
 				dy = -dy - currentSpeed
-				print paddleDirection
-				
+								
 				dx += paddleDirection				
 			)
 			else
